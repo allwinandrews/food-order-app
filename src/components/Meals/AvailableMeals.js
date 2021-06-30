@@ -34,6 +34,7 @@ import classes from "./AvailableMeals.module.css";
 export default function AvailableMeals() {
   const [meals, setMeals] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [httpError, setHttpError] = useState();
 
   useEffect(() => {
     const fetchMeals = async () => {
@@ -41,6 +42,11 @@ export default function AvailableMeals() {
       const url = `https://react-http-default-rtdb.firebaseio.com/${section}`;
 
       const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
       const responseData = await response.json();
 
       const loadedMeals = [];
@@ -56,7 +62,11 @@ export default function AvailableMeals() {
       setIsLoading(false);
     };
 
-    fetchMeals();
+    fetchMeals().catch((error) => {
+      setHttpError(error.message);
+      setIsLoading(false);
+    });
+
     // return () => {
     //   cleanup
     // }
@@ -66,6 +76,14 @@ export default function AvailableMeals() {
     return (
       <section className={classes.MealsLoading}>
         <p>LOADING...</p>
+      </section>
+    );
+  }
+
+  if (httpError) {
+    return (
+      <section className={classes.MealsError}>
+        <p>{httpError}</p>
       </section>
     );
   }
