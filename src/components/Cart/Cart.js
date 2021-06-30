@@ -25,6 +25,10 @@ export default function Cart(props) {
     setIsCheckout(true);
   };
 
+  const cancelHandler = () => {
+    setIsCheckout(false);
+  };
+
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartCtx.items.map((item) => (
@@ -60,7 +64,7 @@ export default function Cart(props) {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckout && <Checkout onCancel={props.onClose} />}
+      {isCheckout && <Checkout onCancel={cancelHandler} />}
       {!isCheckout && modalActions}
     </Modal>
   );
